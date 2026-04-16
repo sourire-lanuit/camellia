@@ -5,9 +5,10 @@
 #include <cstdint>
 
 void encrypt(uint8_t* b, Key& roundkey);
-void decrypt();
+void decrypt(uint8_t* b, Key& roundkey);
 void generate_keys();
 std::vector<uint8_t> encrypt_data(std::vector<uint8_t> data, Key& roundkey);
+std::vector<uint8_t> decrypt_data(std::vector<uint8_t> data, Key& roundkey)
 
 struct Key {
     uint64_t kw;

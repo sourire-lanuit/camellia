@@ -16,7 +16,7 @@ void encrypt_block(uint8_t* b, Key& roundkey){
 } //судячи по методє для 128 бітов
 
 std::vector<uint8_t> encrypt_data(std::vector<uint8_t> data, Key& roundkey){
-    while(data.size()%16) data.push_back(0);
+    while(data.size() % 16) data.push_back(0);
     for(size_t i = 0; i < data.size(); i += 16) encrypt_block(&data[i], roundkey);
     return data;
 }
