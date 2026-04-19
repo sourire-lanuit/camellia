@@ -10,9 +10,6 @@ void decrypt_block(uint8_t* b, Key& roundkey) {
         L = t;
     }
 }
-//останній крок я ще не поняла як записати 
-//та і загалом все похоже на брєд 
-//но сказали закидать по мірі написання
 
 std::vector<uint8_t> decrypt_data(std::vector<uint8_t> data, Key& roundkey){
     for(size_t i = 0; i < data.size(); i += 16) decrypt_block(&data[i], roundkey);
