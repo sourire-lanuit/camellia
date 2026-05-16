@@ -35,3 +35,39 @@ static void init_sboxes() {
     }
     inited_sbox = true;
 }
+
+// сюди ж ще ф, фл і фл^-1 (фл1 бо позначення) функції чисто по логіці з методички
+
+uint64_t F(uint64_t x, uint64_t ke) {
+    uint64_t t = x ^ ke;
+    uint8_t u[8];
+    uint8_t z0 = SBOX1[u[0]], z1 = SBOX2[u[1]], z2 = SBOX3[u[2]], z3 = SBOX4[u[3]];
+    uint8_t z4 = SBOX2[u[4]], z5 = SBOX3[u[5]], z6 = SBOX4[u[6]], z7 = SBOX1[u[7]];
+    uint8_t p[8];
+    p[0] = z0 ^ z2 ^ z3 ^ z5 ^ z6 ^ z7; 
+    p[1] = z0 ^ z1 ^ z3 ^ z4 ^ z6 ^ z7;
+    p[2] = z0 ^ z1 ^ z2 ^ z4 ^ z5 ^ z7; 
+    p[3] = z1 ^ z2 ^ z3 ^ z4 ^ z5 ^ z6;
+    p[4] = z0 ^ z1 ^ z5 ^ z6 ^ z7;
+    p[5] = z1 ^ z2 ^ z4 ^ z6 ^ z7;
+    p[6] = z2 ^ z3 ^ z4 ^ z5 ^ z7;
+    p[7] = z0 ^ z3 ^ z4 ^ z5 ^ z6;
+}
+ 
+uint64_t FL(uint64_t x, uint64_t kl) {
+    uint32_t xl = (uint32_t)(x >> 32), xr = (uint32_t)x;
+    uint32_t kll = (uint32_t)(kl >> 32), klr = (uint32_t)kl;
+    uint32_t t = xl & kll;
+    uint32_t yr = ((t << 1) | (t >> 31)) ^ xr;
+    uint32_t yl = (yr|klr) ^ xl;
+    return ((uint64_t)yl << 32) | yr;
+}
+ // пов намагаєшся не переплутати своїх кентов-тезок і називаєш кожного по піб
+uint64_t FL1(uint64_t y, uint64_t kl) {
+    uint32_t yl =(uint32_t)(y >> 32), yr = (uint32_t)y;
+    uint32_t kll =(uint32_t)(kl >> 32), klr = (uint32_t)kl;
+    uint32_t xl = (yr | klr) ^ yl;
+    uint32_t t = xl & kll;
+    uint32_t xr = ((t << 1) | (t >> 31)) ^ yr;
+    return ((uint64_t)xl << 32) | xr;
+}

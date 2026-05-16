@@ -8,7 +8,7 @@ void encrypt(uint8_t* b, Key& roundkey);
 void decrypt(uint8_t* b, Key& roundkey);
 void generate_keys();
 std::vector<uint8_t> encrypt_data(std::vector<uint8_t> text, Key& roundkey);
-std::vector<uint8_t> decrypt_data(std::vector<uint8_t> data, Key& roundkey)
+std::vector<uint8_t> decrypt_data(std::vector<uint8_t> data, Key& roundkey);
 
 struct Key {
     uint64_t kw[4];
@@ -22,5 +22,7 @@ static uint8_t SBOX3[256];
 static uint8_t SBOX4[256];
 static bool inited_sbox;
 static void init_sboxes();
+
+void generate_keys(const std::vector<uint8_t>& key);
 
 #endif
