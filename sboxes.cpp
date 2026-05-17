@@ -71,3 +71,8 @@ uint64_t FL1(uint64_t y, uint64_t kl) {
     uint32_t xr = ((t << 1) | (t >> 31)) ^ yr;
     return ((uint64_t)xl << 32) | xr;
 }
+
+static const uint64_t sigma[6] = {
+    0xA09E667F3BCC908BULL, 0xB67AE8584CAA73B2ULL, 0xC6EF372FE94F82BEULL, 0x54FF53A5F1D36F1CULL, 0x10E527FADE682D1DULL, 0xB05688C2B3E6C1FDULL
+};
+//отетат порядок для генерації 

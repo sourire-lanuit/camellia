@@ -24,5 +24,6 @@ static bool inited_sbox;
 static void init_sboxes();
 
 void generate_keys(const std::vector<uint8_t>& key);
-
+static const uint64_t sigma[6];
+void cipher_use(const std::vector<uint8_t>& key);
 #endif
