@@ -36,11 +36,37 @@ static void init_sboxes() {
     inited_sbox = true;
 }
 
+static inline uint64_t load64(const uint8_t* p) {
+    return ((uint64_t)p[0] << 56) | ((uint64_t)p[1] << 48) | ((uint64_t)p[2] << 40) | ((uint64_t)p[3] << 32)
+    | ((uint64_t)p[4] << 24) | ((uint64_t)p[5] << 16) | ((uint64_t)p[6] << 8) | ((uint64_t)p[7]);
+}
+static inline void store64(uint8_t* p, uint64_t v) {
+    p[0] = (v >> 56) & 0xFF; p[1] = (v >> 48) & 0xFF; p[2] = (v >> 40) & 0xFF; p[3] = (v >> 32) & 0xFF;
+    p[4] = (v >> 24) & 0xFF; p[5] = (v >> 16) & 0xFF; p[6] = (v >> 8) & 0xFF; p[7] =(v) & 0xFF;
+}
+
+ // поворт меншої/більшої частини 64бітного числа хдебільшого треба буде в ключах
+static inline uint64_t high128(uint64_t high, uint64_t low, int n) {
+    n &= 127;
+    if (n == 0) return high;
+    if (n < 64) return (high << n) | (low >> (64 - n));
+    n -= 64;
+    return (low << n) | (high >> (64 - n));
+}
+static inline uint64_t low128(uint64_t high, uint64_t low, int n) {
+    n &= 127;
+    if (n == 0) return low;
+    if (n < 64) return (low << n) | (high >> (64 - n));
+    n -= 64;
+    return (high << n) | (low >> (64 - n));
+}
+
 // сюди ж ще ф, фл і фл^-1 (фл1 бо позначення) функції чисто по логіці з методички
 
 uint64_t F(uint64_t x, uint64_t ke) {
     uint64_t t = x ^ ke;
     uint8_t u[8];
+    store64(u, t);
     uint8_t z0 = SBOX1[u[0]], z1 = SBOX2[u[1]], z2 = SBOX3[u[2]], z3 = SBOX4[u[3]];
     uint8_t z4 = SBOX2[u[4]], z5 = SBOX3[u[5]], z6 = SBOX4[u[6]], z7 = SBOX1[u[7]];
     uint8_t p[8];
@@ -63,7 +89,8 @@ uint64_t FL(uint64_t x, uint64_t kl) {
     return ((uint64_t)yl << 32) | yr;
 }
  // пов намагаєшся не переплутати своїх кентов-тезок і називаєш кожного по піб
-uint64_t FL1(uint64_t y, uint64_t kl) {
+ // upd я згадала що -1 це інверсія inverse 
+uint64_t FLIN(uint64_t y, uint64_t kl) {
     uint32_t yl =(uint32_t)(y >> 32), yr = (uint32_t)y;
     uint32_t kll =(uint32_t)(kl >> 32), klr = (uint32_t)kl;
     uint32_t xl = (yr | klr) ^ yl;
@@ -73,6 +100,14 @@ uint64_t FL1(uint64_t y, uint64_t kl) {
 }
 
 static const uint64_t sigma[6] = {
-    0xA09E667F3BCC908BULL, 0xB67AE8584CAA73B2ULL, 0xC6EF372FE94F82BEULL, 0x54FF53A5F1D36F1CULL, 0x10E527FADE682D1DULL, 0xB05688C2B3E6C1FDULL
+    0xA09E667F3BCC908BULL, 0xB67AE8584CAA73B2ULL, 0xC6EF372FE94F82BEULL, 
+    0x54FF53A5F1D36F1CULL, 0x10E527FADE682D1DULL, 0xB05688C2B3E6C1FDULL
 };
 //отетат порядок для генерації 
+//апд я визнаю що 6 значень в 1 рядок незручно дивитись
+
+
+// короче я поняла мені треба допоміжні функції 
+// чуть не написала банки
+// допоміжна банка у мене вже є 
+// тільки ця вся байда має перед функціями записуватись

@@ -2,7 +2,25 @@
 
 void generate_keys(const std::vector<uint8_t>& key) {
     uint64_t KLL, KLR, KRL = 0, KRR = 0;
-     // для 128 і елзе 192/256 тоді
+    //kal kar kbl kbr ще треба ініціялізувати якраз через оту сігму
+    uint64_t KAL = KLL ^ KRL, KAR = KLR ^ KRR;
+    KAL = KAL ^ F(KAR, sigma[1]);
+    KAR = KAR ^ F(KAL, sigma[0]); 
+    KAL = KAL ^ KLL; 
+    KAR = KAR ^ KLR;
+    KAL = KAL ^ F(KAR, sigma[3]);
+    KAR = KAR ^ F(KAL, sigma[2]); 
+
+    uint64_t KBL = 0, KBR = 0;
+    if (key_lenght != 128) {
+        KBL = KAL ^ KRL; 
+        KBR = KAR ^ KRR;
+        KBL = KBL ^ F(KBR, sigma[5]);
+        KBR = KBR ^ F(KBL, sigma[4]); 
+    } 
+    
+    
+    // для 128 і елзе 192/256 тоді
 
      if (key_lenght == 128) {
         kw[0] = (KLL, KLR, 0); 
@@ -49,24 +67,24 @@ void generate_keys(const std::vector<uint8_t>& key) {
         k[8] = (KLL, KLR, 45); 
         k[9] = (KLL, KLR, 45);
         k[10] = (KAL, KAR, 45); 
-        k[11] = (KAL,KAR, 45);
+        k[11] = (KAL, KAR, 45);
         kl[2] = (KLL, KLR, 60); 
         kl[3] = (KLL, KLR, 60); 
         k[12] = (KRL, KRR, 60); 
         k[13] = (KRL, KRR, 60);
         k[14] = (KBL, KBR, 60); 
         k[15] = (KBL, KBR, 60);
-        k[16] = (KLL,KLR, 77); 
+        k[16] = (KLL, KLR, 77); 
         k[17] = (KLL, KLR, 77); 
         kl[4] = (KAL, KAR, 77); 
         kl[5] = (KAL, KAR, 77);
-        k[18]= (KRL, KRR, 94); 
+        k[18] = (KRL, KRR, 94); 
         k[19] = (KRL, KRR, 94); 
         k[20] = (KAL, KAR, 94); 
         k[21] = (KAL, KAR, 94); 
         k[22] = (KLL, KLR, 111); 
         k[23] = (KLL, KLR, 111); 
-        kw[2] = (KBL,KBR, 111); 
+        kw[2] = (KBL, KBR, 111); 
         kw[3] = (KBL, KBR, 111);
     }
 }

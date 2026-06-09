@@ -15,6 +15,7 @@ struct Key {
     uint64_t k[24];
     uint64_t kl[6];
 };  
+int key_lenght;
 
 static uint8_t SBOX1[256];
 static uint8_t SBOX2[256];
@@ -26,4 +27,14 @@ static void init_sboxes();
 void generate_keys(const std::vector<uint8_t>& key);
 static const uint64_t sigma[6];
 void cipher_use(const std::vector<uint8_t>& key);
+
+static inline uint64_t load64(const uint8_t* p);
+static inline void store64(uint8_t* p, uint64_t v);
+static inline uint64_t high128(uint64_t high, uint64_t low, int n);
+static inline uint64_t low128(uint64_t high, uint64_t low, int n);
+
+uint64_t F(uint64_t x, uint64_t ke);
+uint64_t FL(uint64_t x, uint64_t kl);
+uint64_t FLIN(uint64_t y, uint64_t kl);
+
 #endif
