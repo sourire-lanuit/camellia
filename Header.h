@@ -7,6 +7,8 @@
 void generate_keys();
 void encrypt_block(uint8_t block[16]);
 std::vector<uint8_t> encrypt_data(std::vector<uint8_t>& text);
+void decrypt_block(uint8_t block[16]);
+std::vector<uint8_t> decrypt_data(const std::vector<uint8_t>& ciphertext);
 
 static constexpr size_t block_size = 16;
 
