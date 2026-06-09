@@ -1,22 +1,52 @@
 #include "Header.h"
 
-void encrypt_block(uint8_t* b, Key& roundkey){
-    uint64_t L =* (uint64_t*)b, R =* (uint64_t*)(b + 8);
-    L ^= roundkey.kw[0]; R ^= roundkey.kw[1];
+void encrypt_block(uint8_t block[16]) {
+    uint64_t L = load64(block), R = load64(block+8);
+    L = L ^ kw[0]; R = R ^ kw[1];
+ 
+#define round_key(l, r, ki) { uint64_t _t = (l); (l) = F((l), (ki))^(r); (r) = _t; }
+ 
+    if (key_lenght == 128) {
+        round_key(L, R, k[0]); round_key(L, R, k[1]); round_key(L, R, k[2]);
+        round_key(L, R, k[3]); round_key(L, R, k[4]); round_key(L, R, k[5]);
 
-    for(int i = 0; i < 18; i++){
-        uint64_t t = L;
-        L = F(L, roundkey.k[i]) ^ R;
-        R = t;
-        if(i == 5 || i == 11) { 
-            L = FL(L, roundkey.kl[i/6]); R = FL(R, roundkey.kl[i/6]); 
-        }
+        L = FL(L, kl[0]); R = FLIN(R, kl[1]);
+
+        round_key(L, R, k[6]); round_key(L, R, k[7]); round_key(L, R, k[8]);
+        round_key(L ,R, k[9]); round_key(L, R, k[10]); round_key(L, R, k[11]);
+
+        L = FL(L, kl[2]); R = FLIN(R, kl[3]);
+
+        round_key(L, R, k[12]); round_key(L, R, k[13]); round_key(L, R, k[14]);
+        round_key(L, R, k[15]); round_key(L, R, k[16]); round_key(L, R, k[17]);
+    } else {
+        round_key(L, R, k[0]); round_key(L, R, k[1]); round_key(L, R, k[2]);
+        round_key(L, R, k[3]); round_key(L, R, k[4]); round_key(L, R, k[5]);
+
+        L = FL(L, kl[0]); R = FLIN(R, kl[1]);
+
+        round_key(L, R, k[6]); round_key(L, R, k[7]); round_key(L, R, k[8]);
+        round_key(L, R, k[9]); round_key(L, R, k[10]); round_key(L, R, k[11]);
+
+        L = FL(L, kl[2]); R = FLIN(R, kl[3]);
+
+        round_key(L, R, k[12]); round_key(L, R, k[13]); round_key(L, R, k[14]);
+        round_key(L, R, k[15]); round_key(L, R, k[16]); round_key(L, R, k[17]);
+
+        L = FL(L, kl[4]); R = FLIN(R, kl[5]);
+
+        round_key(L, R, k[18]); round_key(L, R, k[19]); round_key(L, R, k[20]);
+        round_key(L, R, k[21]); round_key(L, R, k[22]); round_key(L, R, k[23]);
     }
 
-} 
+#undef round_key
 
-std::vector<uint8_t> encrypt_data(std::vector<uint8_t> text, Key& roundkey){
-    while(text.size() % 16) text.push_back(0);
-    for(size_t i = 0; i < text.size(); i += 16) encrypt_block(&text[i], roundkey);
-    return text; // стратегічне рішення перейменувати data на text щоб не було плутанини із декриптом
+    R = R ^ kw[2]; L = L ^ kw[3];
+    store64(block, R); store64(block + 8, L);
+}
+
+std::vector<uint8_t> encrypt_data(std::vector<uint8_t>& text) {
+    while (text.size() % block_size) text.push_back(0);
+    for (size_t i = 0; i < text.size(); i += block_size) encrypt_block(text.data()+i);
+    return text;
 }

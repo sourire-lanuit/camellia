@@ -4,18 +4,16 @@
 #include <vector>
 #include <cstdint>
 
-void encrypt(uint8_t* b, Key& roundkey);
-void decrypt(uint8_t* b, Key& roundkey);
 void generate_keys();
-std::vector<uint8_t> encrypt_data(std::vector<uint8_t> text, Key& roundkey);
-std::vector<uint8_t> decrypt_data(std::vector<uint8_t> data, Key& roundkey);
+void encrypt_block(uint8_t block[16]);
+std::vector<uint8_t> encrypt_data(std::vector<uint8_t>& text);
 
-struct Key {
-    uint64_t kw[4];
-    uint64_t k[24];
-    uint64_t kl[6];
-};  
+static constexpr size_t block_size = 16;
+
 int key_lenght;
+uint64_t kw[4];
+uint64_t k[24];
+uint64_t kl[6];
 
 static uint8_t SBOX1[256];
 static uint8_t SBOX2[256];
