@@ -75,7 +75,7 @@ void run_tests() {
     std::cout << "\nECB-mode round-trip tests\n";
     {
         std::vector<uint8_t> key = hex_to_bytes("0123456789abcdeffedcba9876543210");
-        std::string example_text = "I (Romance). Dedicated to the blossoming apples.";  //хто б сумнівався лол
+        std::string example_text = "I (Romance). Dedicated to the blossoming apples."; 
         std::vector<uint8_t> plain(example_text.begin(), example_text.end());
         
         cipher_use(key);

@@ -18,11 +18,10 @@ uint8_t SBOX1[256] = {
     114, 7, 185, 85, 248, 238, 172, 10, 54, 73, 42, 104, 60, 56, 241, 164,
     64, 40, 211, 123, 187, 201, 67, 193, 21, 227, 173, 244, 119, 199, 128, 158
 }; 
-//стандартний вигляд першого сбоксу такий жеж
 
 uint8_t SBOX2[256];
 uint8_t SBOX3[256];
-uint8_t SBOX4[256]; //ну по методичці 4 штуки 
+uint8_t SBOX4[256];  
 
 static bool inited_sbox = false;
 static void init_sboxes() {
@@ -45,7 +44,6 @@ static inline void store64(uint8_t* p, uint64_t v) {
     p[4] = (v >> 24) & 0xFF; p[5] = (v >> 16) & 0xFF; p[6] = (v >> 8) & 0xFF; p[7] =(v) & 0xFF;
 }
 
- // поворт меншої/більшої частини 64бітного числа хдебільшого треба буде в ключах
 static inline uint64_t high128(uint64_t high, uint64_t low, int n) {
     n &= 127;
     if (n == 0) return high;
@@ -60,8 +58,6 @@ static inline uint64_t low128(uint64_t high, uint64_t low, int n) {
     n -= 64;
     return (high << n) | (low >> (64 - n));
 }
-
-// сюди ж ще ф, фл і фл^-1 (фл1 бо позначення) функції чисто по логіці з методички
 
 uint64_t F(uint64_t x, uint64_t ke) {
     uint64_t t = x ^ ke;
@@ -88,8 +84,7 @@ uint64_t FL(uint64_t x, uint64_t kl) {
     uint32_t yl = (yr|klr) ^ xl;
     return ((uint64_t)yl << 32) | yr;
 }
- // пов намагаєшся не переплутати своїх кентов-тезок і називаєш кожного по піб
- // upd я згадала що -1 це інверсія inverse 
+
 uint64_t FLIN(uint64_t y, uint64_t kl) {
     uint32_t yl =(uint32_t)(y >> 32), yr = (uint32_t)y;
     uint32_t kll =(uint32_t)(kl >> 32), klr = (uint32_t)kl;
@@ -103,11 +98,3 @@ static const uint64_t sigma[6] = {
     0xA09E667F3BCC908BULL, 0xB67AE8584CAA73B2ULL, 0xC6EF372FE94F82BEULL, 
     0x54FF53A5F1D36F1CULL, 0x10E527FADE682D1DULL, 0xB05688C2B3E6C1FDULL
 };
-//отетат порядок для генерації 
-//апд я визнаю що 6 значень в 1 рядок незручно дивитись
-
-
-// короче я поняла мені треба допоміжні функції 
-// чуть не написала банки
-// допоміжна банка у мене вже є 
-// тільки ця вся байда має перед функціями записуватись
