@@ -1,4 +1,5 @@
 #include "Header.h"
+#include <stdexcept>
 
 void decrypt_block(uint8_t block[16]) {
     uint64_t R = load64(block), L = load64(block + 8);
@@ -40,6 +41,9 @@ void decrypt_block(uint8_t block[16]) {
 }
 
 std::vector<uint8_t> decrypt_data(const std::vector<uint8_t>& ciphertext) {
+    if (ciphertext.size() % block_size != 0) {
+        throw std::invalid_argument("Ciphertext size must be a multiple of block size");
+    }
     std::vector<uint8_t> out_data = ciphertext;
     for (size_t i = 0; i < out_data.size(); i += block_size) decrypt_block(out_data.data() + i);
     return out_data;
