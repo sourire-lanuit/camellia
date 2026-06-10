@@ -1,5 +1,10 @@
 #include "Header.h"
 
+int key_lenght;
+uint64_t kw[4];
+uint64_t k[24];
+uint64_t kl[6];
+
 uint8_t SBOX1[256] = {
     112, 130, 44, 236, 179, 39, 192, 229, 228, 133, 87, 53, 234, 12, 174, 65,
     35, 239, 107, 147, 69, 25, 165, 33, 237, 14, 79, 78, 29, 101, 146, 189,
@@ -24,7 +29,7 @@ uint8_t SBOX3[256];
 uint8_t SBOX4[256];  
 
 static bool inited_sbox = false;
-static void init_sboxes() {
+void init_sboxes() {
     if (inited_sbox) return;
     for (int i = 0; i < 256; i++) {
         uint8_t s = SBOX1[i];
@@ -35,23 +40,23 @@ static void init_sboxes() {
     inited_sbox = true;
 }
 
-static inline uint64_t load64(const uint8_t* p) {
+uint64_t load64(const uint8_t* p) {
     return ((uint64_t)p[0] << 56) | ((uint64_t)p[1] << 48) | ((uint64_t)p[2] << 40) | ((uint64_t)p[3] << 32)
     | ((uint64_t)p[4] << 24) | ((uint64_t)p[5] << 16) | ((uint64_t)p[6] << 8) | ((uint64_t)p[7]);
 }
-static inline void store64(uint8_t* p, uint64_t v) {
+void store64(uint8_t* p, uint64_t v) {
     p[0] = (v >> 56) & 0xFF; p[1] = (v >> 48) & 0xFF; p[2] = (v >> 40) & 0xFF; p[3] = (v >> 32) & 0xFF;
     p[4] = (v >> 24) & 0xFF; p[5] = (v >> 16) & 0xFF; p[6] = (v >> 8) & 0xFF; p[7] =(v) & 0xFF;
 }
 
-static inline uint64_t high128(uint64_t high, uint64_t low, int n) {
+uint64_t high128(uint64_t high, uint64_t low, int n) {
     n &= 127;
     if (n == 0) return high;
     if (n < 64) return (high << n) | (low >> (64 - n));
     n -= 64;
     return (low << n) | (high >> (64 - n));
 }
-static inline uint64_t low128(uint64_t high, uint64_t low, int n) {
+uint64_t low128(uint64_t high, uint64_t low, int n) {
     n &= 127;
     if (n == 0) return low;
     if (n < 64) return (low << n) | (high >> (64 - n));
@@ -74,6 +79,8 @@ uint64_t F(uint64_t x, uint64_t ke) {
     p[5] = z1 ^ z2 ^ z4 ^ z6 ^ z7;
     p[6] = z2 ^ z3 ^ z4 ^ z5 ^ z7;
     p[7] = z0 ^ z3 ^ z4 ^ z5 ^ z6;
+
+    return load64(p);
 }
  
 uint64_t FL(uint64_t x, uint64_t kl) {
@@ -94,7 +101,7 @@ uint64_t FLIN(uint64_t y, uint64_t kl) {
     return ((uint64_t)xl << 32) | xr;
 }
 
-static const uint64_t sigma[6] = {
+const uint64_t sigma[6] = {
     0xA09E667F3BCC908BULL, 0xB67AE8584CAA73B2ULL, 0xC6EF372FE94F82BEULL, 
     0x54FF53A5F1D36F1CULL, 0x10E527FADE682D1DULL, 0xB05688C2B3E6C1FDULL
 };

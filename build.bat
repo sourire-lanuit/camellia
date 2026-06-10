@@ -1,11 +1,11 @@
 @echo off
 if not exist build mkdir build
 cd build
-cmake ..
+cmake -G "MinGW Makefiles" ..
 cmake --build .
 echo.
 echo ========================================
 echo Running tests...
 echo ========================================
-Debug\camellia_tests.exe
+camellia_tests.exe
 cd ..
