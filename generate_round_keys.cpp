@@ -14,20 +14,20 @@ void generate_keys(const std::vector<uint8_t>& key) {
     }
 
     uint64_t KAL = KLL ^ KRL, KAR = KLR ^ KRR;
-    KAL = KAL ^ F(KAR, sigma[1]);
     KAR = KAR ^ F(KAL, sigma[0]); 
+    KAL = KAL ^ F(KAR, sigma[1]); 
     KAL = KAL ^ KLL; 
     KAR = KAR ^ KLR;
-    KAL = KAL ^ F(KAR, sigma[3]);
     KAR = KAR ^ F(KAL, sigma[2]); 
+    KAL = KAL ^ F(KAR, sigma[3]); 
 
     uint64_t KBL = 0, KBR = 0;
     if (key_lenght != 128) {
         KBL = KAL ^ KRL; 
         KBR = KAR ^ KRR;
-        KBL = KBL ^ F(KBR, sigma[5]);
-        KBR = KBR ^ F(KBL, sigma[4]); 
-    } 
+        KBR = KBR ^ F(KBL, sigma[4]);
+        KBL = KBL ^ F(KBR, sigma[5]); 
+    } //за версією ші я переплутала послідовність сігм, в цілому він має рацію
 
      if (key_lenght == 128) {
         kw[0] = high128(KLL, KLR, 0); 

@@ -35,13 +35,15 @@ static bool unit_test(const char* name, const char* hex_key, const char* text_he
 
     bool encrypt = (memcmp(block, expected.data(), 16) == 0);
 
+    std::vector<uint8_t> actual_ciph(block, block + 16);
+
     decrypt_block(block);
     bool decrypt = (memcmp(block, plain.data(), 16) == 0);
 
     std::cout << (encrypt && decrypt ? "Pass " : "Fail") << name << "\n";
     if (!encrypt) {
         std::cout << "Expected: " << ciph_hex << "\n";
-        std::cout << "Got: " << bytes_to_hex(block, 16) << "\n";
+        std::cout << "Got: " << bytes_to_hex(actual_ciph.data(), 16) << "\n";
     }
 
     if (!decrypt) std::cout << "Decryption failed: original text isn't recovered\n";

@@ -27,7 +27,7 @@ void generate_keys(const std::vector<uint8_t>& key);
 void cipher_use(const std::vector<uint8_t>& key);
 
 void encrypt_block(uint8_t block[16]);
-std::vector<uint8_t> encrypt_data(std::vector<uint8_t>& text);
+std::vector<uint8_t> encrypt_data(const std::vector<uint8_t>& text);
 void decrypt_block(uint8_t block[16]);
 std::vector<uint8_t> decrypt_data(const std::vector<uint8_t>& ciphertext);
 
