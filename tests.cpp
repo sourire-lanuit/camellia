@@ -98,7 +98,7 @@ void run_tests() {
 
         bool threw = false;
         try {
-            std::vector<uint8_t> bad = {1,2,3};
+            std::vector<uint8_t> bad = {1, 2, 3};
             decrypt_data(bad);
         } catch (const std::invalid_argument&) {
             threw = true;

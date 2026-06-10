@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <cstring>
-#include <algorithm>
 
 static std::vector<uint8_t> read_file(const std::string& path) {
     std::ifstream file(path, std::ios::binary);
@@ -49,11 +48,27 @@ static void generate_key(const std::string& key_file, int bits) {
     std::cout << "Generated " << bits << "-bit key -> " << key_file << "\n";
 }
 
+static void instructions(const char* prog) {
+    std::cout << "Camellia file encryption presents:\n\n" << "Usage:\n" << prog << "encrypt <input> <output> <key_file>\n" 
+    << prog << "decrypt <input> <output> <key_file>\n" << prog << "genkey <key_file> (128|192|256)\n"
+    << "\nFile format: CAM1 header + 4-byte original length + ECB ciphertext\n" << "Key file: raw binary key (16|24|32 bytes)\n";
+}
+
 int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        instructions(argv[0]); 
+        return 1;
+    }
+
     std::string cmd = argv[1];
 
     try {
         if (cmd == "genkey") {
+            if (argc < 3) { 
+                instructions(argv[0]); 
+                return 1; 
+            }
+
             int bits = (argc >= 4) ? std::stoi(argv[3]) : 256;
             if (bits != 128 && bits != 192 && bits != 256) {
                 std::cerr << "Key size must be 128, 192, or 256\n";
@@ -62,6 +77,11 @@ int main(int argc, char* argv[]) {
             generate_key(argv[2], bits);
 
         } else if (cmd == "encrypt") {
+            if (argc < 5) { 
+                instructions(argv[0]); 
+                return 1; 
+            }
+
             auto text = read_file(argv[2]);
             auto key = read_file(argv[4]);
             uint32_t orig_size = (uint32_t)text.size();
@@ -71,10 +91,15 @@ int main(int argc, char* argv[]) {
             auto output = pack_encrypted(ciphertext, orig_size);
             write_file(argv[3], output);
 
-            std::cout << "Encrypted " << orig_size << " bytes -> " << ciphertext.size() << " bytes ciphertext\n";
+            std::cout << "Encrypted " << orig_size << " bytes to " << ciphertext.size() << " bytes ciphertext\n";
             std::cout << "Output: " << argv[3] << "\n";
 
         } else if (cmd == "decrypt") {
+            if (argc < 5) { 
+                instructions(argv[0]); 
+                return 1; 
+            }
+
             auto file_data = read_file(argv[2]);
             auto key = read_file(argv[4]);
 
@@ -95,11 +120,12 @@ int main(int argc, char* argv[]) {
             text.resize(orig_size);
             write_file(argv[3], text);
 
-            std::cout << "Decrypted " << ciphertext.size() << " bytes -> " << orig_size << " bytes plaintext\n";
+            std::cout << "Decrypted " << ciphertext.size() << " bytes to " << orig_size << " bytes plaintext\n";
             std::cout << "Output: " << argv[3] << "\n";
 
         } else {
             std::cerr << "Unknown command: " << cmd << "\n";
+            instructions(argv[0]);
             return 1;
         }
     } catch (const std::exception& except) {
