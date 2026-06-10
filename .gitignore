@@ -39,3 +39,19 @@
 
 # debug information files
 *.dwo
+
+# Теки збірки CMake
+build/
+out/
+.cmake/
+
+# Згенеровані ключі та зашифровані файли
+*.key
+*.enc
+
+# Виконувані файли (для Windows)
+*.exe
+*.obj
+*.lib
+*.dll
+*.pdb
