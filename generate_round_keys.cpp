@@ -54,8 +54,8 @@ void generate_keys(const std::vector<uint8_t>& key) {
         k[15] = low128(KLL, KLR, 94); 
         k[16] = high128(KAL, KAR, 94); 
         k[17] = low128(KAL, KAR, 94); 
-        kw[2] = high128(KLL, KLR, 111); 
-        kw[3] = low128(KLL, KLR, 111); 
+        kw[2] = high128(KAL, KAR, 111); 
+        kw[3] = low128(KAL, KAR, 111);
     }
 
     else {
