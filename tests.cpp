@@ -64,12 +64,12 @@ void run_tests() {
          "0123456789abcdeffedcba9876543210",
          "67673138549669730857065648eabe43");
 
-    test("192-bit key, test 1",
+    test("192-bit key, test 2",
          "0123456789abcdeffedcba98765432100011223344556677",
          "0123456789abcdeffedcba9876543210",
          "b4993401b3e996f84ee5cee7d79b09b9");
 
-    test("256-bit key, test 1",
+    test("256-bit key, test 3",
          "0123456789abcdeffedcba987654321000112233445566778899aabbccddeeff",
          "0123456789abcdeffedcba9876543210",
          "9acc237dff16d76c20ef7c919e3a7509");
@@ -105,7 +105,7 @@ void run_tests() {
         } catch (const std::invalid_argument&) {
             threw = true;
         }
-        std::cout << (threw ? "Pass " : "Fail ") << "Decryption failed due to unalinged text length\n";
+        std::cout << (threw ? "Pass " : "Fail ") << "Decryption rejects unalinged text length\n";
         if (pass += threw, !threw) fail++;
     }
 

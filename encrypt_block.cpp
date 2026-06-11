@@ -2,47 +2,78 @@
 
 void encrypt_block(uint8_t block[16]) {
     uint64_t L = load64(block), R = load64(block+8);
-    L = L ^ kw[0]; R = R ^ kw[1];
- 
-#define round_key(l, r, ki) { uint64_t _t = (l); (l) = (r); (r) = _t ^ F((r), (ki)); }
- 
+    L = L ^ kw[0]; R = R ^ kw[1]; //макроси покидають наше шоу
+
     if (key_lenght == 128) {
-        round_key(L, R, k[0]); round_key(L, R, k[1]); round_key(L, R, k[2]);
-        round_key(L, R, k[3]); round_key(L, R, k[4]); round_key(L, R, k[5]);
+        R = R ^ F(L, k[0]); 
+        L = L ^ F(R, k[1]);
+        R = R ^ F(L, k[2]); 
+        L = L ^ F(R, k[3]);
+        R = R ^ F(L, k[4]); 
+        L = L ^ F(R, k[5]);
 
-        L = FL(L, kl[0]); R = FLIN(R, kl[1]);
+        L = FL(L, kl[0]); 
+        R = FLIN(R, kl[1]);
 
-        round_key(L, R, k[6]); round_key(L, R, k[7]); round_key(L, R, k[8]);
-        round_key(L ,R, k[9]); round_key(L, R, k[10]); round_key(L, R, k[11]);
+        R = R ^ F(L, k[6]); 
+        L = L ^ F(R, k[7]);
+        R = R ^ F(L, k[8]); 
+        L = L ^ F(R, k[9]);
+        R = R ^ F(L, k[10]); 
+        L = L ^ F(R, k[11]);
 
-        L = FL(L, kl[2]); R = FLIN(R, kl[3]);
+        L = FL(L, kl[2]); 
+        R = FLIN(R, kl[3]);
 
-        round_key(L, R, k[12]); round_key(L, R, k[13]); round_key(L, R, k[14]);
-        round_key(L, R, k[15]); round_key(L, R, k[16]); round_key(L, R, k[17]);
+        R = R ^ F(L, k[12]); 
+        L = L ^ F(R, k[13]);
+        R = R ^ F(L, k[14]); 
+        L = L ^ F(R, k[15]);
+        R = R ^ F(L, k[16]); 
+        L = L ^ F(R, k[17]);
     } else {
-        round_key(L, R, k[0]); round_key(L, R, k[1]); round_key(L, R, k[2]);
-        round_key(L, R, k[3]); round_key(L, R, k[4]); round_key(L, R, k[5]);
+        R = R ^ F(L, k[0]); 
+        L = L ^ F(R, k[1]);
+        R = R ^ F(L, k[2]); 
+        L = L ^ F(R, k[3]);
+        R = R ^ F(L, k[4]); 
+        L = L ^ F(R, k[5]);
 
-        L = FL(L, kl[0]); R = FLIN(R, kl[1]);
+        L = FL(L, kl[0]); 
+        R = FLIN(R, kl[1]);
 
-        round_key(L, R, k[6]); round_key(L, R, k[7]); round_key(L, R, k[8]);
-        round_key(L, R, k[9]); round_key(L, R, k[10]); round_key(L, R, k[11]);
+        R = R ^ F(L, k[6]); 
+        L = L ^ F(R, k[7]);
+        R = R ^ F(L, k[8]); 
+        L = L ^ F(R, k[9]);
+        R = R ^ F(L, k[10]); 
+        L = L ^ F(R, k[11]);
 
-        L = FL(L, kl[2]); R = FLIN(R, kl[3]);
+        L = FL(L, kl[2]); 
+        R = FLIN(R, kl[3]);
 
-        round_key(L, R, k[12]); round_key(L, R, k[13]); round_key(L, R, k[14]);
-        round_key(L, R, k[15]); round_key(L, R, k[16]); round_key(L, R, k[17]);
+        R = R ^ F(L, k[12]); 
+        L = L ^ F(R, k[13]);
+        R = R ^ F(L, k[14]); 
+        L = L ^ F(R, k[15]);
+        R = R ^ F(L, k[16]); 
+        L = L ^ F(R, k[17]);
 
-        L = FL(L, kl[4]); R = FLIN(R, kl[5]);
+        L = FL(L, kl[4]); 
+        R = FLIN(R, kl[5]);
 
-        round_key(L, R, k[18]); round_key(L, R, k[19]); round_key(L, R, k[20]);
-        round_key(L, R, k[21]); round_key(L, R, k[22]); round_key(L, R, k[23]);
+        R = R ^ F(L, k[18]); 
+        L = L ^ F(R, k[19]);
+        R = R ^ F(L, k[20]); 
+        L = L ^ F(R, k[21]);
+        R = R ^ F(L, k[22]); 
+        L = L ^ F(R, k[23]);
     }
 
-#undef round_key
-
-    R = R ^ kw[2]; L = L ^ kw[3];
-    store64(block, R); store64(block + 8, L);
+    uint64_t out_L = R ^ kw[2];
+    uint64_t out_R = L ^ kw[3];
+    store64(block, out_L); 
+    store64(block + 8, out_R);
 }
 
 std::vector<uint8_t> encrypt_data(const std::vector<uint8_t>& text) {

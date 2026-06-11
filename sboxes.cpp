@@ -52,16 +52,25 @@ void store64(uint8_t* p, uint64_t v) {
 uint64_t high128(uint64_t high, uint64_t low, int n) {
     n &= 127;
     if (n == 0) return high;
-    if (n < 64) return (high << n) | (low >> (64 - n));
-    n -= 64;
-    return (low << n) | (high >> (64 - n));
+    if (n < 64) {
+        return (high << n) | (low >> (64 - n));
+    } else if (n == 64) {
+        return low;
+    } else {
+        return (low << (n - 64)) | (high >> (128 - n));
+    }
 }
+
 uint64_t low128(uint64_t high, uint64_t low, int n) {
     n &= 127;
     if (n == 0) return low;
-    if (n < 64) return (low << n) | (high >> (64 - n));
-    n -= 64;
-    return (high << n) | (low >> (64 - n));
+    if (n < 64) {
+        return (low << n) | (high >> (64 - n));
+    } else if (n == 64) {
+        return high;
+    } else {
+        return (high << (n - 64)) | (low >> (128 - n));
+    }
 }
 
 uint64_t F(uint64_t x, uint64_t ke) {
