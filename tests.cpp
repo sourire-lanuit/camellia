@@ -40,7 +40,7 @@ static bool unit_test(const char* name, const char* hex_key, const char* text_he
     decrypt_block(block);
     bool decrypt = (memcmp(block, plain.data(), 16) == 0);
 
-    std::cout << (encrypt && decrypt ? " Pass " : " Fail") << name << "\n";
+    std::cout << (encrypt && decrypt ? "Pass  " : "Fail ") << name << "\n";
     if (!encrypt) {
         std::cout << "Expected: " << ciph_hex << "\n";
         std::cout << "Got: " << bytes_to_hex(actual_ciph.data(), 16) << "\n";
@@ -85,7 +85,7 @@ void run_tests() {
         auto recovered = decrypt_data(ciphertext);
         
         bool ok = (recovered == plain);
-        std::cout << (ok ? " Pass" : " Fail") << "ECB round-trip (16 bytes)\n";
+        std::cout << (ok ? "Pass " : "Fail ") << "ECB round-trip (16 bytes)\n";
         if (pass += ok, !ok) fail++;
     }
     {
@@ -95,7 +95,7 @@ void run_tests() {
         cipher_use(key);
         auto ciphertext = encrypt_data(plain);
         bool is_size_right = (ciphertext.size() == 32);
-        std::cout << (is_size_right ? " Pass" : " Fail") << "ECB padding (17 bytes to 32 bytes)\n";
+        std::cout << (is_size_right ? "Pass " : "Fail ") << "ECB padding (17 bytes to 32 bytes)\n";
         if (pass += is_size_right, !is_size_right) fail++;
 
         bool threw = false;
@@ -105,7 +105,7 @@ void run_tests() {
         } catch (const std::invalid_argument&) {
             threw = true;
         }
-        std::cout << (threw ? " Pass" : " Fail") << "Decryption failed due to unalinged text length\n";
+        std::cout << (threw ? "Pass " : "Fail ") << "Decryption failed due to unalinged text length\n";
         if (pass += threw, !threw) fail++;
     }
 
