@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <random>
 
 static std::vector<uint8_t> read_file(const std::string& path) {
     std::ifstream file(path, std::ios::binary);
@@ -39,11 +40,16 @@ static bool unpack_encrypted(const std::vector<uint8_t>& data, std::vector<uint8
 
 
 static void generate_key(const std::string& key_file, int bits) {
-    std::ifstream rand_gen("/dev/urandom", std::ios::binary);
-    if (!rand_gen) throw std::runtime_error("Unable to open /dev/urandom");
     int bytes = bits / 8;
     std::vector<uint8_t> key(bytes);
-    rand_gen.read(reinterpret_cast<char*>(key.data()), bytes);
+    std::random_device rd; 
+    std::mt19937 gen(rd()); 
+    std::uniform_int_distribution<uint16_t> dist(0, 255); 
+
+    for (int i = 0; i < bytes; ++i) {
+        key[i] = static_cast<uint8_t>(dist(gen));
+    }
+
     write_file(key_file, key);
     std::cout << "Generated " << bits << "-bit key -> " << key_file << "\n";
 }
