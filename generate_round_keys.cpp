@@ -91,3 +91,9 @@ void generate_keys(const std::vector<uint8_t>& key) {
         kw[3] = low128(KBL, KBR, 111);
     }
 }
+
+void cipher_use(const std::vector<uint8_t>& key) {
+    key_lenght = key.size() * 8;
+    init_sboxes();
+    generate_keys(key);
+}
