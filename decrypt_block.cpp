@@ -5,7 +5,7 @@ void decrypt_block(uint8_t block[16]) {
     uint64_t R = load64(block), L = load64(block + 8);
     R = R ^ kw[2]; L = L ^ kw[3];
  
-#define round_keys(r, l, ki) { uint64_t _t = (r); (r) = F((r), (ki))^(l); (l) = _t; }
+#define round_keys(r, l, ki) { uint64_t _t = (r); (r) = (l); (l) = _t ^ F((l), (ki)); }
  
     if (key_lenght == 128) {
         round_keys(R, L, k[17]); round_keys(R, L, k[16]); round_keys(R, L, k[15]);

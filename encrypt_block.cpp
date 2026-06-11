@@ -4,7 +4,7 @@ void encrypt_block(uint8_t block[16]) {
     uint64_t L = load64(block), R = load64(block+8);
     L = L ^ kw[0]; R = R ^ kw[1];
  
-#define round_key(l, r, ki) { uint64_t _t = (l); (l) = (r); (r) = _t ^ F((r), (ki)); } //макрос написаний дураком буде дурним
+#define round_key(l, r, ki) { uint64_t _t = (l); (l) = (r); (r) = _t ^ F((r), (ki)); }
  
     if (key_lenght == 128) {
         round_key(L, R, k[0]); round_key(L, R, k[1]); round_key(L, R, k[2]);
