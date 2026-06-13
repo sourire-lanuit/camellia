@@ -2,7 +2,7 @@
 
 void encrypt_block(uint8_t block[16]) {
     uint64_t L = load64(block), R = load64(block+8);
-    L = L ^ kw[0]; R = R ^ kw[1]; //макроси покидають наше шоу
+    L = L ^ kw[0]; R = R ^ kw[1]; 
 
     if (key_lenght == 128) {
         R = R ^ F(L, k[0]); 
